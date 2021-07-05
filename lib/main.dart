@@ -31,12 +31,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool fetching = true;
   UserFollowers? users;
 
 
   void fetch_users() async {
     setState(() {
-
+      fetching = true;
     });
     try {
       //Response response = await Dio().get("https://api.github.com/search/users?q=followers%3A%3E%3D1000&ref=searchresults&s=followers&type=Users");
@@ -47,10 +48,12 @@ class _HomePageState extends State<HomePage> {
         users =userFollowersFromJson(jsonEncode(response.data));
         // print("items are ${items.length}");
         print("followers are ${users!.items.length}");
+        fetching=false;
       });
       print(response);
     } catch (e) {
       setState(() {
+        fetching=false;
       });
       print(e);
     }
@@ -70,64 +73,72 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: users!.items.length,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemBuilder: (context,index){
-                    return users!.items.length==null?CircularProgressIndicator():Container(
-                      child:SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            InkWell(
-                              onTap:(){
-                                Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>UserProfile(userimage:users!.items[index].avatarUrl,follower:users!.items[index].login
-                                        ),
-                                      ),
-                                    );
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  RichText(
-                                    text: TextSpan(
-                                      text: 'user name is  ',
-                                      style: TextStyle(fontSize: 12.0, color: Colors.lightBlue),
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: users!.items[index].login,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 15,
-                                              color: Colors.red),
-                                        ),
-                                      ],
-                                    ),),
-
-                                  CircleAvatar(
-                                    radius: 35,
-                                    backgroundImage: NetworkImage(users!.items[index].avatarUrl),
-                                  ),
-                                ],
-                              )
-                            ),
-                            SizedBox(height: 20,),
-
-                          ],
-                        ),
-                      )
-                    );
-                  },
-                )
+                userdata()
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+  Widget userdata (){
+    if(fetching){
+      return Center(
+      child: CircularProgressIndicator(),
+      );
+    }
+    return   ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: users!.items.length,
+      shrinkWrap: true,
+      scrollDirection: Axis.vertical,
+      itemBuilder: (context,index){
+        return Container(
+            child:SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InkWell(
+                      onTap:(){
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>UserProfile(userimage:users!.items[index].avatarUrl,follower:users!.items[index].login
+                            ),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              text: 'user name is  ',
+                              style: TextStyle(fontSize: 12.0, color: Colors.lightBlue),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: users!.items[index].login,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                      color: Colors.red),
+                                ),
+                              ],
+                            ),),
+
+                          CircleAvatar(
+                            radius: 35,
+                            backgroundImage: NetworkImage(users!.items[index].avatarUrl),
+                          ),
+                        ],
+                      )
+                  ),
+                  SizedBox(height: 20,),
+
+                ],
+              ),
+            )
+        );
+      },
     );
   }
 }
