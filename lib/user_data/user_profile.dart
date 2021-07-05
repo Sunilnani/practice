@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_proj/user_data/followers.dart';
+
 class UserProfile extends StatefulWidget {
   UserProfile({
     required this.userimage,
+    required this.follower,
 });
   final String userimage;
+  final String follower;
   @override
   _UserProfileState createState() => _UserProfileState();
 }
@@ -21,39 +23,14 @@ class _UserProfileState extends State<UserProfile> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // CircleAvatar(
-                //   radius: 45,
-                //   child:Image.network(widget.userimage),
-                // ),
-                widget.userimage==null?CircularProgressIndicator():Container(
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),
-                    color: Colors.yellow
-                  ),
-                  height: 50,
-                  width: 100,
-                  child: Image.network(widget.userimage),
+                CircleAvatar(
+                  radius: 45,
+                  backgroundImage: NetworkImage(widget.userimage),
                 ),
                 SizedBox(height: 20,),
-                InkWell(
-                  onTap: (){
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>Followers(
+                Text(widget.follower)
 
-                        )
-                      ),
-                    );
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 40,
-                    width: 100,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
-                      color: Colors.yellow,
-                    ),
-                    child: Text("Followers",style: TextStyle(color: Colors.red,fontWeight: FontWeight.w500,fontSize: 13),),
-                  ),
-                )
+
               ],
             ),
           ),

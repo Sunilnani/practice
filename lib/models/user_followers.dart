@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final userFollowers = userFollowersFromJson(jsonString);
-
 import 'dart:convert';
 
 UserFollowers userFollowersFromJson(String str) => UserFollowers.fromJson(json.decode(str));
@@ -114,7 +110,7 @@ class Item {
     "repos_url": reposUrl,
     "events_url": eventsUrl,
     "received_events_url": receivedEventsUrl,
-    //"type": typeValues.reverse[type],
+    "type": typeValues.reverse[type],
     "site_admin": siteAdmin,
     "score": score,
   };
@@ -127,15 +123,9 @@ final typeValues = EnumValues({
 });
 
 class EnumValues<T> {
+  EnumValues ( this.map ,);
   Map<String, T> map;
-  // Map<T, String> reverseMap;
 
-  EnumValues(this.map,);
+  get reverse => null;
 
-// Map<T, String> get reverse {
-//   if (reverseMap == null) {
-//     reverseMap = map.map((k, v) => new MapEntry(v, k));
-//   }
-//   return reverseMap;
-// }
 }
